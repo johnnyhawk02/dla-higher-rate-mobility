@@ -144,7 +144,7 @@ const QuestionForm = () => {
   );
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h4" gutterBottom>
           DLA Form Assistant
@@ -181,7 +181,7 @@ const QuestionForm = () => {
           onChange={(e) => setAnswer(e.target.value)}
           sx={{ mb: 3, fontSize: '1.1rem' }}
           InputProps={{
-            style: { fontSize: '1.1rem' }
+            style: { fontSize: '1.1rem', lineHeight: '1.5' }
           }}
         />
         

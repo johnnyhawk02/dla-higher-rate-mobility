@@ -91,7 +91,7 @@ const Summary = () => {
   );
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h4" gutterBottom>
           DLA Form Summary
