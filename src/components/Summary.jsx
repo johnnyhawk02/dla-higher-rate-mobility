@@ -10,9 +10,12 @@ import {
   AccordionSummary,
   AccordionDetails,
   Snackbar,
-  Alert
+  Alert,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useAuth } from '../context/AuthContext';
 import { getFormProgress, submitForm } from '../services/formService';
 import dlaQuestions from '../questions';
@@ -68,6 +71,27 @@ const Summary = () => {
 
   const handleCloseNotification = () => {
     setNotification(prev => ({ ...prev, open: false }));
+  };
+
+  const handleCopyToClipboard = (question, answer) => {
+    const formattedText = `you are an expert in DLA for kids, answer the question\n\n${question.description}\n\nusing\n${question.helpfulInfo}\n\nincluding\n${answer}`;
+    
+    navigator.clipboard.writeText(formattedText)
+      .then(() => {
+        setNotification({
+          open: true,
+          message: 'Copied to clipboard!',
+          severity: 'success'
+        });
+      })
+      .catch(error => {
+        console.error('Failed to copy text: ', error);
+        setNotification({
+          open: true,
+          message: 'Failed to copy to clipboard',
+          severity: 'error'
+        });
+      });
   };
 
   if (loading) {
@@ -129,10 +153,30 @@ const Summary = () => {
       {answeredQuestions.length > 0 ? (
         answeredQuestions.map(question => (
           <Accordion key={question.questionNumber} sx={{ mb: 2 }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary 
+              expandIcon={<ExpandMoreIcon />}
+              sx={{ '.MuiAccordionSummary-content': {
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flex: 1,
+              }}}
+            >
               <Typography>
                 <strong>Question {question.questionNumber}:</strong> {question.description}
               </Typography>
+              <Tooltip title="Copy to clipboard">
+                <IconButton 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyToClipboard(question, answers[question.questionNumber]);
+                  }}
+                  color="primary"
+                  size="small"
+                  sx={{ ml: 2 }}
+                >
+                  <ContentCopyIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </AccordionSummary>
             <AccordionDetails>
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>

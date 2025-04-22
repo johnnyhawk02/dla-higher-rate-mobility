@@ -11,8 +11,11 @@ import {
   Alert,
   Card,
   CardContent,
-  Divider
+  Divider,
+  IconButton,
+  Tooltip
 } from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useAuth } from '../context/AuthContext';
 import { saveFormProgress, getFormProgress } from '../services/formService';
 import dlaQuestions from '../questions';
@@ -129,6 +132,27 @@ const QuestionForm = () => {
     setNotification(prev => ({ ...prev, open: false }));
   };
 
+  const handleCopyToClipboard = () => {
+    const formattedText = `you are an expert in DLA for kids, answer the question\n\n${currentQuestion.description}\n\nusing\n${currentQuestion.helpfulInfo}\n\nincluding\n${answer}`;
+    
+    navigator.clipboard.writeText(formattedText)
+      .then(() => {
+        setNotification({
+          open: true,
+          message: 'Copied to clipboard!',
+          severity: 'success'
+        });
+      })
+      .catch(error => {
+        console.error('Failed to copy text: ', error);
+        setNotification({
+          open: true,
+          message: 'Failed to copy to clipboard',
+          severity: 'error'
+        });
+      });
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
@@ -156,9 +180,20 @@ const QuestionForm = () => {
       </Paper>
 
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Question {currentQuestion.questionNumber}: {currentQuestion.description}
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Typography variant="h5" gutterBottom>
+            Question {currentQuestion.questionNumber}: {currentQuestion.description}
+          </Typography>
+          <Tooltip title="Copy to clipboard">
+            <IconButton 
+              onClick={handleCopyToClipboard}
+              color="primary"
+              size="large"
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
         
         <Card sx={{ mb: 3, bgcolor: '#f5f5f5' }}>
           <CardContent>
